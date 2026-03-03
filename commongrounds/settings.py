@@ -39,7 +39,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'localevents',
+<<<<<<< HEAD
     'bookclub',
+=======
+    'commissions',
+>>>>>>> 762bfa8 (Added Commissions Requests app)
 ]
 
 MIDDLEWARE = [

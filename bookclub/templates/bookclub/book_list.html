@@ -4,10 +4,11 @@
 <h1>All Books</h1>
 <ul>
     {% for book in books %}
-        <li>
-            <a href="{% url 'book-detail' book.pk %}">{{ book.title }}</a> 
-            {{ book.author }} · {{ book.publication_year }}
+        <li style="list-style-type:square;">
+            <a href="{{ book.get_absolute_url }}"><strong>{{ book.title }}</strong></a> 
+            <br>{{ book.author }} · {{ book.publication_year }}
         </li>
+        <br>
     {% empty %}
         <li>No books found.</li>
     {% endfor %}

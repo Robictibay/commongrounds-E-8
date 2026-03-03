@@ -7,8 +7,8 @@
 <p><strong>Genre:</strong> {{ book.genre.name }}</p>
 <hr>
 <p>
-    {{ book.genre.name }}
-    <br> - {{ book.genre.description }}
+    <strong>{{ book.genre.name }}</strong>
+    <br><br>- {{ book.genre.description }}
 </p>
-<a href="{% url 'book-list' %}">Back to all books</a>
+<a href="{% url 'bookclub:book-list' %}">Back to all books</a>
 {% endblock %}

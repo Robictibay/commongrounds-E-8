@@ -2,8 +2,8 @@
 <ul>
     {% for event in events %}
         <li>
-            <a href="{% url 'event-detail' event.pk %}">{{ event.title }}</a> 
-            ({{ event.category.name }}) - {{ event.start_time }}
+            <a href="{% url 'localevents:event-detail' event.pk %}">{{ event.title }}</a> 
+            ({{ event.category.name|default:"Uncategorized" }}) - {{ event.start_time }}
         </li>
     {% empty %}
         <li>No events found.</li>

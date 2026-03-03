@@ -1,0 +1,15 @@
+{% extends 'bookclub/base.html' %}
+
+{% block body %}
+<h1>All Books</h1>
+<ul>
+    {% for book in books %}
+        <li>
+            <a href="{% url 'book-detail' book.pk %}">{{ book.title }}</a> 
+            {{ book.author }} · {{ book.publication_year }}
+        </li>
+    {% empty %}
+        <li>No books found.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

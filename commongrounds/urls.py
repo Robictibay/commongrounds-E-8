@@ -12,11 +12,7 @@ urlpatterns = [
     path('accounts/', include('accounts.urls')),            
     
     path('localevents/', include('localevents.urls')),
-    path('merchstore/', include('merchstore.urls')),
     path('bookclub/', include('bookclub.urls')),
+    path("commissions/", include("commissions.urls")),
     path('diyprojects/', include('diyprojects.urls')),
-    path('commissions/', include('commissions.urls')),
 ]
-
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

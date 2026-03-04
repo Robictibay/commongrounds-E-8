@@ -42,8 +42,6 @@ INSTALLED_APPS = [
     'bookclub',
     'commissions',
     'diyprojects',
-    'merchstore',
-    'accounts.apps.AccountsConfig',
 ]
 
 MIDDLEWARE = [

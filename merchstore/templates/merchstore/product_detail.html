@@ -1,0 +1,7 @@
+<h1>Product Detail</h1>
+<p>Name: {{ product.name }}</p>
+<p>Product type: {{ product.product_type }}</p>
+<p>Description: {{ product.description }}</p>
+<p>Price: {{ product.price }}</p>
+<br>
+<a href="{% url 'merchstore:item-list' %}">Back</a>

@@ -20,9 +20,7 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('localevents/', include('localevents.urls')),
-<<<<<<< HEAD
     path('bookclub/', include('bookclub.urls')),
-=======
     path("commissions/", include("commissions.urls")),
->>>>>>> c599f10 (Made the urls for app based level and updated urls for project level)
+    path('diyprojects/', include('diyprojects.urls')),
 ]

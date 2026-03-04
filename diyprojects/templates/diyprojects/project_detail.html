@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}Project Detail{% endblock %}
+
+{% block content %}
+<h1>{{ project.title }}</h1>
+<p><strong>Category:</strong> {{ project.category.name}}</p>
+<p><strong>Description:</strong> {{ project.description}}</p>
+<p><strong>Materials:</strong> {{ project.materials}}</p>
+<p><strong>Steps:</strong> {{ project.steps}}</p>
+<hr>
+<p>
+    <strong>{{ project.category.name }}</strong>
+    <br><br>- {{ project.category.description }}
+</p>
+<a href="{% url 'diyprojects:project-list' %}">Back to projects.</a>
+{% endblock %}

@@ -8,7 +8,6 @@ class ProjectListView(ListView):
     template_name = 'diyprojects/project_list.html'
     context_object_name = 'projects'
 
-
 class ProjectDetailView(DetailView):
     model = Project
     template_name = 'diyprojects/project_detail.html'

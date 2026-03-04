@@ -20,10 +20,11 @@ class Product(models.Model):
     product_type = models.ForeignKey(
         ProductType,
         on_delete=models.SET_NULL,
-        related_name='product'
+        related_name='product',
+        null=True
     )
     description = models.TextField(blank=True)
-    price = models.DecimalField(decimal_places=2)
+    price = models.DecimalField(max_digits=5, decimal_places=2)
 
     class Meta:
         ordering = ['name']

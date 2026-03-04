@@ -3,8 +3,7 @@ from .views import ProjectListView, ProjectDetailView
 
 urlpatterns = [
     path('projects', ProjectListView.as_view(), name='project-list'),
-    path('project/<int:pk>',
-         ProjectDetailView.as_view(), name='project-detail'),
+    path('project/<int:pk>', ProjectDetailView.as_view(), name='project-detail'),
 ]
 
 app_name = "diyprojects"

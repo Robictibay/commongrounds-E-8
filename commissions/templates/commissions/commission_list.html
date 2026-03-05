@@ -1,0 +1,16 @@
+<h1>Commission Requests</h1>
+
+{% if commissions %}
+    <ul>
+    {% for commission in commissions %}
+        <li>
+            <a href="/commissions/request/{{commission.pk}}">
+                {{commission.title}}
+            </a>
+                
+        </li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No commissions available.</p>
+{% endif %}

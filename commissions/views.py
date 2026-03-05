@@ -9,7 +9,7 @@ def commission_list(request):
 
 def specific_commission(request, pk):
     commission = Commissions.objects.get(pk=pk)
-    ctx = {"commission": commisssion}
+    ctx = {"commission": commission}
     return render(request, "commissions/commisssion_specific.html", ctx)
 
 # Create your views here.

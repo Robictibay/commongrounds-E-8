@@ -8,6 +8,7 @@ class CommissionType(models.Model):
 
     class Meta:
         ordering = ["name"] 
+        verbose_name_plural = "Commission Types"
 
     def __str__(self):
         return self.name
@@ -21,6 +22,7 @@ class Commissions(models.Model):
 
     class Meta:
         ordering = ['created_on']
+        verbose_name_plural = "Commissions"
     
     def __str__(self):
         return self.title   

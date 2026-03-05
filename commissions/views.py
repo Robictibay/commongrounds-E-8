@@ -7,7 +7,7 @@ def commission_list(request):
     return render(request, "commissions/commission_list.html", ctx)
 
 
-def specific_commission(request, pk):
+def commission_specific(request, pk):
     commission = Commissions.objects.get(pk=pk)
     ctx = {"commission": commission}
     return render(request, "commissions/commisssion_specific.html", ctx)

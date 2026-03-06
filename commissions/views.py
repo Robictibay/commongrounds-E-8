@@ -14,4 +14,5 @@ def commission_specific(request, pk):
     return render(request, "commissions/commission_specific.html", ctx)
 
 
+
 # Create your views here.

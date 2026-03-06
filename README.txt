@@ -1,5 +1,5 @@
-Watanabe, Yuuki
-Tibayan, Rafael
+De Guzman, Justin
 De Villa, Matthew
 Montesa, Francis
-De Guzman, Justin
+Tibayan, Rafael
+Watanabe, Yuuki

@@ -1,6 +1,5 @@
 from django.contrib import admin
 from .models import ProjectCategory, Project
-# Register your models here.
 
 @admin.register(ProjectCategory)
 class ProjectCategoryAdmin(admin.ModelAdmin):

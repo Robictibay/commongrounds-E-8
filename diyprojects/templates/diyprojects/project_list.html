@@ -3,12 +3,12 @@
 
 {% block content %}
 
-<h1>DIY Project Categories</h1>
+<h1>DIY Projects</h1>
 <ul>
     {% for project in projects %}
         <li>
             <a href="{{project.get_absolute_url}}">{{project.title}}</a>
-            ({{ project.category.name }}) - {{ project.category.description }}
+            (Category: {{ project.category.name }}) - {{ project.category.description }}
         </li>
     {% empty %}
         <li>No projects found.</li>

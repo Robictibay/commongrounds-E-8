@@ -1,18 +1,18 @@
 from django.db import models
 
 
+
 class CommissionType(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
 
     class Meta:
-        ordering = ["name"]
+        ordering = ["name"] 
         verbose_name_plural = "Commission Types"
 
     def __str__(self):
         return self.name
-
-
+    
 class Commissions(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
@@ -21,11 +21,9 @@ class Commissions(models.Model):
     updated_on = models.DateTimeField(auto_now=True)
 
     class Meta:
-        ordering = ["created_on"]
+        ordering = ['created_on']
         verbose_name_plural = "Commissions"
-
+    
     def __str__(self):
-        return self.title
-
-
+        return self.title   
 # Create your models here.

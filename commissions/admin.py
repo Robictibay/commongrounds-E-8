@@ -4,4 +4,3 @@ from .models import CommissionType, Commissions
 
 admin.site.register(CommissionType)
 admin.site.register(Commissions)
-# Register your models here.

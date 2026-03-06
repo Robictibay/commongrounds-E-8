@@ -1,6 +1,6 @@
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
-from.models import Project
+from .models import Project
 
 
 class ProjectListView(ListView):
@@ -13,5 +13,3 @@ class ProjectDetailView(DetailView):
     model = Project
     template_name = 'diyprojects/project_detail.html'
     context_object_name = 'project'
-
-

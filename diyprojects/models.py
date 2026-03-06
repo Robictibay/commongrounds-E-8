@@ -8,19 +8,19 @@ class ProjectCategory(models.Model):
 
     class Meta:
         ordering = ['name']
-        verbose_name = "Project Category"          
+        verbose_name = "Project Category"
         verbose_name_plural = "Project Categories"
 
     def __str__(self):
-        return self.name  
-   
-    
+        return self.name
+
+
 class Project(models.Model):
     title = models.CharField(max_length=255)
     category = models.ForeignKey(
         ProjectCategory,
         on_delete=models.SET_NULL,
-        null = True,
+        null=True,
         related_name='projects'
     )
     description = models.TextField()
@@ -30,12 +30,10 @@ class Project(models.Model):
     updated_on = models.DateTimeField(auto_now=True)
 
     class Meta:
-        ordering = ['-created_on'] 
+        ordering = ['-created_on']
 
     def __str__(self):
         return self.title
-    
+
     def get_absolute_url(self):
         return reverse('diyprojects:project-detail', args=[str(self.id)])
-    
-

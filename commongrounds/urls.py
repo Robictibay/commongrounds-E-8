@@ -22,4 +22,6 @@ urlpatterns = [
     path('localevents/', include('localevents.urls')),
     path('bookclub/', include('bookclub.urls')),
     path("commissions/", include("commissions.urls")),
+    path('diyprojects/', include('diyprojects.urls')),
+    path('merchstore/', include('merchstore.urls')),
 ]

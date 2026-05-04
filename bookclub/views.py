@@ -5,7 +5,7 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, F
 
 from accounts.mixins import RoleRequiredMixin
 from datetime import date
-from .models import Book, Bookmark, BookReview, Borrow
+from .models import Book, Bookmark
 from .forms import BookCreateForm, BookUpdateForm, BookReviewForm, BorrowForm
 
 
@@ -37,7 +37,7 @@ class BookListView(ListView):
             return all_books.exclude(pk__in=special_pks)
 
         return all_books
-    
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
@@ -82,7 +82,7 @@ class BookDetailView(DetailView):
             Bookmark.objects.create(book=book, profile=profile)
         else:
             messages.error(self.request, 'Not logged in')
-    
+
     def _handle_review(self, book):
         form = BookReviewForm(self.request.POST)
         if form.is_valid():
@@ -157,7 +157,7 @@ class BookBorrowView(FormView):
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
         form.fields['date_borrowed'].widget.attrs['min'] = date.today().isoformat()
-        
+
         if self.request.user.is_authenticated:
             form.fields['name'].initial = self.request.user.profile.display_name
             form.fields['name'].widget.attrs['readonly'] = True

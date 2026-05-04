@@ -1,0 +1,25 @@
+{% extends 'bookclub/base.html' %}
+
+{% block body %}
+<h1>Borrowing "{{ book.title }}"</h1>
+<p><strong>Author:</strong> {{ book.author }}</p>
+<p><strong>Year of Publication:</strong> {{ book.publication_year }}</p>
+<p><strong>Genre:</strong> {{ book.genre.name }}</p>
+<p><strong>Synopsis:</strong>
+    {% if book.synopsis %}
+        {{ book.synopsis }}
+    {% else %}
+        No synopsis available.
+    {% endif %}
+</p>
+<p><strong>Contributed by:</strong> {{ book.contributor.display_name }}</p>
+<hr>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Borrow</button>
+</form>
+
+<a href="{{ book.get_absolute_url }}">Cancel Borrow</a>
+{% endblock %}

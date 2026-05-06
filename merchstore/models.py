@@ -19,7 +19,7 @@ class ProductType(models.Model):
 class Product(models.Model):
     def __init__(self, *args, **kwargs):
         if self.fields['stock'] == 0:
-            self.fields[status] = 'Out of stock'
+            self.fields['status'] = 'Out of stock'
 
     STATUS_CHOICES = [
         ('Available', 'Available'),

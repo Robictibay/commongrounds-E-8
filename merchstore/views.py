@@ -1,8 +1,9 @@
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView
+from django.shortcuts import redirect
 from accounts.mixins import RoleRequiredMixin
-from .models import Product
-from .forms import ProductForm
+from .models import Product, Transaction
+from .forms import ProductForm, TransactionForm
 
 
 class ProductListView(ListView):
@@ -24,6 +25,32 @@ class ProductDetailView(DetailView):
     model = Product
     template_name = 'merchstore/product_detail.html'
     context_object_name = 'product'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = TransactionForm()
+        return context
+    
+    def post(self, request, *args, **kwargs):
+        form = TransactionForm(request.POST)
+        if form.is_valid():
+            if self.request.user.is_authenticated:
+                transaction = Transaction()
+                transaction.buyer = self.request.user.profile
+                transaction.product = super().get_object()
+                transaction.amount = form.cleaned_data.get('amount')
+                transaction.status = form.cleaned_data.get('status')  
+                transaction.product.stock = transaction.product.stock - transaction.amount
+                transaction.product.save()      
+                transaction.save()
+                return redirect('merchstore:item-list')
+            else:
+                return redirect('login')
+        else:
+            self.object_list = self.get_queryset(**kwargs)
+            context = self.get_context_data(**kwargs)
+            context['form'] = form
+            return self.render_to_response(context)
 
 
 class ProductCreateView(RoleRequiredMixin, CreateView):

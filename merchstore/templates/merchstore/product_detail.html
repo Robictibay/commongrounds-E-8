@@ -1,7 +1,21 @@
 <h1>Product Detail</h1>
 <p>Name: {{ product.name }}</p>
+<p>Owner: {{ product.owner }}</p>
 <p>Product type: {{ product.product_type }}</p>
 <p>Description: {{ product.description }}</p>
 <p>Price: {{ product.price }}</p>
-<br>
+<p>Stock: {{ product.stock }}</p>
+<p>Status: {{ product.status }}</p>
+<hr>
+{% if not user.profile == product.owner %}
+<form method="post">
+    {% csrf_token %}
+    {{ form }}
+    {% if product.stock > 0 %}
+        <input type="submit" value="Buy Product">
+    {% endif %}
+</form>
+{% else %}
+    <p><a>Edit Product</a></p>
+{% endif %}
 <a href="{% url 'merchstore:item-list' %}">Back</a>

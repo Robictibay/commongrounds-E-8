@@ -1,5 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import Commission
+from .forms import CommissionForm
 
 
 def commission_list(request):
@@ -14,5 +15,30 @@ def commission_specific(request, pk):
     return render(request, "commissions/commission_specific.html", ctx)
 
 
+<<<<<<< HEAD
 
 # Create your views here.
+=======
+def commission_create(request):
+
+    form = CommissionForm()
+
+    if request.method == "POST":
+        form = CommissionForm(request.POST)
+
+        if form.is_valid():
+            commission = form.save(commit=False)
+            commission.maker = request.user.profile
+            commission.save()
+
+            return redirect(
+                "commission:commission_specific",
+                pk=commission.pk
+            )
+    
+    ctx = {"form":form}
+    return render(request, "commission/commission_form.html", ctx)
+    
+
+
+>>>>>>> 30c113c (added Create Commission view, url, and template)

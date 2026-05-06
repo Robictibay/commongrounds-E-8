@@ -36,9 +36,28 @@ def commission_create(request):
                 pk=commission.pk
             )
     
-    ctx = {"form":form}
+    ctx = {"form": form}
     return render(request, "commission/commission_form.html", ctx)
     
+
+def commission_update(request, pk):
+
+    commission = Commission.objects.get(pk=pk)
+
+    form = CommissionForm(instance=commission)
+
+    if request.method == "POST":
+        form = CommissionForm(request.POST, instance=commission)
+
+        if form.is_valid():
+            commission = form.save()
+            return redirect(
+                "commissions:commission_specific",
+                pk=commission.pk
+            )
+        
+    ctx = {"form": form, "commission": commission}
+    return render(request, "commissions/commission_form.html", ctx)
 
 
 >>>>>>> 30c113c (added Create Commission view, url, and template)

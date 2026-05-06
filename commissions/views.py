@@ -19,7 +19,7 @@ def commission_list(request):
         applied_commissions = Commission.objects.filter(
             job__jobapplication__applicant=request.user.profile
         ).distinct()
-    ctx = {"commissions": commissions}
+    ctx = {"commissions": commissions, "created_commissions": created_commissions, "applied_commissions": applied_commissions}
     return render(request, "commissions/commission_list.html", ctx)
 
 
@@ -60,6 +60,16 @@ def commission_specific(request, pk):
         if accepted_count >= job.manpower_required:
             job.status = "Full"
             job.save()
+
+        all_full = True
+
+        for current_job in jobs:
+            if current_job.status != "Full":
+                all_full = False
+        
+        if all_full:
+            commission.status = "Full"
+            commission.save()
 
         return redirect(
             "commissions:commission_specific",

@@ -6,16 +6,52 @@
 
 <br><br>
 
+{% if user.is_authenticated %}
+
+    <h2>Your Created Commissions</h2>
+
+    {% if created_commissions %}
+        <ul>
+        {% for commission in created_commissions %}
+            <li>
+                <a href="{% url 'commissions:commission_specific' commission.pk %}">
+                    {{commission.title}}
+                </a>
+                    
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+    <p>No commissions available.</p>
+    {% endif %}
+
+    <h2>Applied Commissions</h2>
+    {% if applied_commissions %}
+        <ul>
+            {% for commission in applied_commissions %}
+                <li>
+                    <a href="{% url 'commissions:commission_specific' commission.pk %}">
+                        {{ commission.title }}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No applied commissions.</p>
+    {% endif %}
+{% endif %}
+
+<h2>All Commissions</h2>
+
 {% if commissions %}
     <ul>
-    {% for commission in commissions %}
-        <li>
-            <a href="{% url 'commissions:commission_specific' commission.pk %}">
-                {{commission.title}}
-            </a>
-                
-        </li>
-    {% endfor %}
+        {% for commission in commissions %}
+            <li>
+                <a href="{% url 'commissions:commission_specific' commission.pk %}">
+                    {{ commission.title }}
+                </a>
+            </li>
+        {% endfor %}
     </ul>
 {% else %}
     <p>No commissions available.</p>

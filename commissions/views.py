@@ -6,6 +6,19 @@ from .forms import CommissionForm
 
 def commission_list(request):
     commissions = Commission.objects.all()
+
+    created_commissions = []
+    applied_commissions = []
+
+    if request.user.is_authenticated:
+
+        created_commissions = Commission.objects.filter(
+            maker=request.user.profile
+        )
+
+        applied_commissions = Commission.objects.filter(
+            job__jobapplication__applicant=request.user.profile
+        ).distinct()
     ctx = {"commissions": commissions}
     return render(request, "commissions/commission_list.html", ctx)
 

@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
 from .models import Commission, Job, JobApplication
 from .forms import CommissionForm
 
@@ -15,6 +16,9 @@ def commission_specific(request, pk):
 
     if request.method == "POST":
 
+        if not request.user.is_authenticated:
+            return redirect("login")
+    
         job = Job.objects.get(
             pk=request.POST.get("job_id")
         )
@@ -32,11 +36,15 @@ def commission_specific(request, pk):
     ctx = {"commission": commission, "jobs": jobs}
     return render(request, "commissions/commission_specific.html", ctx)
 
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 
 # Create your views here.
 =======
+=======
+@login_required
+>>>>>>> 92a9ca9 (restricted create commissions and update commissions based on login)
 def commission_create(request):
 
     form = CommissionForm()
@@ -57,7 +65,7 @@ def commission_create(request):
     ctx = {"form": form}
     return render(request, "commission/commission_form.html", ctx)
     
-
+@login_required
 def commission_update(request, pk):
 
     commission = Commission.objects.get(pk=pk)

@@ -22,7 +22,18 @@ def commission_specific(request, pk):
         job = Job.objects.get(
             pk=request.POST.get("job_id")
         )
-
+        
+        already_applied = JobApplication.objects.filter(
+            job=job,
+            applicant=request.user.profile
+        ).exists()
+        
+        if already_applied:
+            return redirect(
+                "commissions:commission_specific",
+                pk=commission.pk
+            )
+        
         JobApplication.objects.create(
             job=job,
             applicant=request.user.profile

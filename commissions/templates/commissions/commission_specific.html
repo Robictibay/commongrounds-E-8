@@ -14,24 +14,31 @@
 
 {% if jobs %}
     <ul>
-        {% for jobs in jobs %}
+        {% for job in jobs %}
             <li>
                 {{ job.role }}
                 -
                 {{ job.manpower_required }} people needed
                 -
                 {{ job.status }}
+                
+                {% if user.is_authenticated and commission.maker != user.profile %}
+                    <form method="post">
+                        {% csrf_token %}
 
-                <form method="post">
-                    {% csrf_token %}
+                        <input type="hidden" name="job_id" value="{{ job.pk }}">
 
-                    <input type="hidden" name="job_id" value="{{ job.pk }}">
-
-                    <button type="submit">
-                        Apply to Job
-                    </button>
-                </form>
-
+                        {% if job.status == "Full" %}
+                        <button type="submit" disabled>
+                            Job Full
+                        </button>
+                        {% else %}
+                            <button type="submit">
+                                Apply to Job
+                            </button>
+                        {% endif %}
+                    </form>
+                {% endif %}
             </li>
         {% endfor %}
     </ul>

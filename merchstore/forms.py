@@ -1,5 +1,6 @@
 from django import forms
-from .models import Product
+from django.db import models
+from .models import Product, Transaction
 
 
 class ProductForm(forms.ModelForm):
@@ -8,4 +9,12 @@ class ProductForm(forms.ModelForm):
         fields = [
             'name', 'product_type', 'description', 'price',
             'stock', 'status'
+        ]
+
+
+class TransactionForm(forms.ModelForm):
+    class Meta:
+        model = Transaction
+        exclude = [
+            'product', 'buyer', 'created_on'
         ]

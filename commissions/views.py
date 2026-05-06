@@ -19,6 +19,13 @@ def commission_list(request):
         applied_commissions = Commission.objects.filter(
             job__jobapplication__applicant=request.user.profile
         ).distinct()
+
+        commissions = Commission.objects.exclude(
+            pk__in=created_commissions
+        ).exclude(
+            pk__in=applied_commissions
+        )
+        
     ctx = {"commissions": commissions, "created_commissions": created_commissions, "applied_commissions": applied_commissions}
     return render(request, "commissions/commission_list.html", ctx)
 
@@ -70,13 +77,24 @@ def commission_specific(request, pk):
         if all_full:
             commission.status = "Full"
             commission.save()
-
         return redirect(
             "commissions:commission_specific",
             pk=commission.pk
         )
     
-    ctx = {"commission": commission, "jobs": jobs}
+    total_manpower = 0
+    open_manpower = 0
+
+    for job in jobs:
+        accepted_count = JobApplication.objects.filter(
+            job=job,
+            status="Accepted"
+        ).count()
+
+        total_manpower += job.manpower_required
+        open_manpower += job.manpower_required - accepted_count
+
+    ctx = {"commission": commission, "jobs": jobs, "total_manpower": total_manpower, "open_manpower": open_manpower}
     return render(request, "commissions/commission_specific.html", ctx)
 
 <<<<<<< HEAD
@@ -89,6 +107,9 @@ def commission_specific(request, pk):
 @login_required
 >>>>>>> 92a9ca9 (restricted create commissions and update commissions based on login)
 def commission_create(request):
+
+    if request.user.profile.role != "Commission Maker":
+        return redirect("commissions:commission_list")
 
     form = CommissionForm()
 
@@ -111,6 +132,9 @@ def commission_create(request):
 @login_required
 def commission_update(request, pk):
 
+    if request.user.profile.role != "Commission Maker":
+        return redirect("commissions:commission_list")
+    
     commission = Commission.objects.get(pk=pk)
 
     if commission.maker != request.user.profile:

@@ -1,4 +1,5 @@
 from django.db import models
+from accounts.models import Profile 
 
 
 class CommissionType(models.Model):
@@ -41,8 +42,9 @@ class Commission(models.Model):
     def __str__(self):
         return self.title
 
+
 class Job(models.Model):
-    Commission = models.ForeignKey(
+    commission = models.ForeignKey(
         Commission,
         on_delete=models.CASCADE
     )
@@ -62,4 +64,32 @@ class Job(models.Model):
     
     def __str__(self):
         return self.role
+    
+
+class JobApplication(models.Model):
+    job = models.ForeignKey(
+        Job,
+        on_delete=models.CASCADE
+    )
+    applicant = models.ForeignKey(
+        Profile,
+        on_delete=models.CASCADE
+    )
+    status = models.CharField(
+        max_length=20,
+        choices=[
+            ('Pending', 'Pending'),
+            ('Accepted', 'Accepted'),
+            ('Rejected', 'Rejected')
+        ]
+        default="Pending"
+    )
+    applied_on = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['status', '-applied_on']
+
+    def __str__(self):
+        return str(self.applicant)
+
 

@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .models import Commission
+from .models import Commission, Job, JobApplication
 from .forms import CommissionForm
 
 
@@ -12,6 +12,23 @@ def commission_list(request):
 def commission_specific(request, pk):
     commission = Commission.objects.get(pk=pk)
     jobs = commission.job_set.all()
+
+    if request.method == "POST":
+
+        job = Job.objects.get(
+            pk=request.POST.get("job_id")
+        )
+
+        JobApplication.objects.create(
+            job=job,
+            applicant=request.user.profile
+        )
+
+        return redirect(
+            "commissions:commission_specific",
+            pk=commission.pk
+        )
+    
     ctx = {"commission": commission, "jobs": jobs}
     return render(request, "commissions/commission_specific.html", ctx)
 

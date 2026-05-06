@@ -21,6 +21,17 @@
                 {{ job.manpower_required }} people needed
                 -
                 {{ job.status }}
+
+                <form method="post">
+                    {% csrf_token %}
+
+                    <input type="hidden" name="job_id" value="{{ job.pk }}">
+
+                    <button type="submit">
+                        Apply to Job
+                    </button>
+                </form>
+                
             </li>
         {% endfor %}
     </ul>

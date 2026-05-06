@@ -17,10 +17,6 @@ class ProductType(models.Model):
 
 
 class Product(models.Model):
-    def __init__(self, *args, **kwargs):
-        if self.fields['stock'] == 0:
-            self.fields['status'] = 'Out of stock'
-
     STATUS_CHOICES = [
         ('Available', 'Available'),
         ('On sale', 'On sale'),
@@ -33,9 +29,15 @@ class Product(models.Model):
         related_name='product',
         null=True
     )
+    owner = models.ForeignKey(
+        Profile,
+        on_delete=models.CASCADE,
+        related_name='product',
+        null=True
+    )
     description = models.TextField(blank=True)
     price = models.DecimalField(max_digits=5, decimal_places=2)
-    stock = models.PositiveIntegerField()
+    stock = models.PositiveIntegerField(default=0)
     status = models.CharField(choices=STATUS_CHOICES, default='Available')
 
     class Meta:
@@ -46,6 +48,11 @@ class Product(models.Model):
 
     def get_absolute_url(self):
         return reverse('merchstore:item-detail', args=[str(self.id)])
+    
+    def save(self, *args, **kwargs):
+        if self.stock == 0:
+            self.status = 'Out of stock'
+        super().save(*args, **kwargs)
 
 class Transaction(models.Model):
     STATUS_CHOICES = [

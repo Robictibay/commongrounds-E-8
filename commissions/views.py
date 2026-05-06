@@ -1,15 +1,15 @@
 from django.shortcuts import render
-from .models import Commissions
+from .models import Commission
 
 
 def commission_list(request):
-    commissions = Commissions.objects.all()
+    commissions = Commission.objects.all()
     ctx = {"commissions": commissions}
     return render(request, "commissions/commission_list.html", ctx)
 
 
 def commission_specific(request, pk):
-    commission = Commissions.objects.get(pk=pk)
+    commission = Commission.objects.get(pk=pk)
     ctx = {"commission": commission}
     return render(request, "commissions/commission_specific.html", ctx)
 

@@ -25,5 +25,5 @@ class Commission(models.Model):
         verbose_name_plural = "Commissions"
 
     def __str__(self):
-        return self.titleA
+        return self.title
 

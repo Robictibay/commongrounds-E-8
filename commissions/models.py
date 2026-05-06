@@ -81,7 +81,7 @@ class JobApplication(models.Model):
             ('Pending', 'Pending'),
             ('Accepted', 'Accepted'),
             ('Rejected', 'Rejected')
-        ]
+        ],
         default="Pending"
     )
     applied_on = models.DateTimeField(auto_now_add=True)

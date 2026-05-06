@@ -1,6 +1,6 @@
 from django.urls import path
-from .views import (ProductListView, ProductDetailView, ProductCreateView, ProductUpdateview,
-                    CartView, TransactionsList)
+from .views import (ProductListView, ProductDetailView, ProductCreateView, 
+                    ProductUpdateview, CartView, TransactionsList)
 
 app_name = "merchstore"
 

@@ -6,7 +6,8 @@ from .models import Product, ProductType, Transaction
 class ProductAdmin(admin.ModelAdmin):
     model = Product
     search_fields = ('name', 'product_type')
-    list_display = ('name', 'owner', 'product_type', 'description', 'price', 'stock', 'status')
+    list_display = ('name', 'owner', 'product_type', 'description', 'price',
+                    'stock', 'status')
     list_filter = ('product_type',)
 
 

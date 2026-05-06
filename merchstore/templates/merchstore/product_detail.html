@@ -16,6 +16,6 @@
     {% endif %}
 </form>
 {% else %}
-    <p><a>Edit Product</a></p>
+    <p><a href="{% url 'merchstore:item-edit' product.pk %}">Edit Product</a></p>
 {% endif %}
 <a href="{% url 'merchstore:item-list' %}">Back</a>

@@ -1,5 +1,8 @@
+<h1>{% if object %}Update Product{% else %}New Product{% endif %}</h1>
 <form method="post">
     {% csrf_token %}
     {{ form }}
-    <input type="submit" value="Add Product">
+    <button type="submit">{% if object %}Edit Product{% else %}Add Product{% endif %}</button>
 </form>
+<br>
+<a href="{% url 'merchstore:item-list' %}">Back</a>

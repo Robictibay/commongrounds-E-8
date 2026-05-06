@@ -1,0 +1,17 @@
+<h1>Transactions List</h1>
+
+{% if user.is_authenticated %}
+    {% for buyer in buyers %}
+         <h3>{{ buyer }}</h3>
+         <ul>
+            {% for item in items %}
+                {% if item.buyer == buyer %}
+                    <li>{{ item.status }}: {{ item.buyer }} bought {{ item.amount }} pieces of {{ item.product }} from {{ item.product.owner }}</li>
+                {% endif %}
+            {% endfor %}
+         </ul>
+    {% endfor %}
+{% endif %} 
+
+<hr>
+<a href="{% url 'merchstore:item-list' %}">Back</a>

@@ -1,5 +1,11 @@
 <h1>Merch Store</h1>
 <p>
+    {% if user.is_authenticated %}
+    <p>
+        <a href="{% url 'merchstore:cart-view' %}">Cart View</a> | 
+        <a href="{% url 'merchstore:transaction-list' %}">Transactions List</a>
+    </p>
+    {% endif %}
     {% if user.is_authenticated and user.profile.role == 'Market Seller' %}
     <a href="{% url 'merchstore:item-add' %}">Add product</a>
     {% endif %}

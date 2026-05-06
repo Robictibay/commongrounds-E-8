@@ -56,6 +56,7 @@ class Product(models.Model):
             self.status = 'Available'
         super().save(*args, **kwargs)
 
+
 class Transaction(models.Model):
     STATUS_CHOICES = [
         ('On cart', 'On cart'),

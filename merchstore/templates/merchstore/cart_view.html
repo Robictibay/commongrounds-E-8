@@ -1,0 +1,17 @@
+<h1>Cart View</h1>
+
+{% if user.is_authenticated %}
+    {% for owner in owners %}
+         <h3>{{ owner }}</h3>
+         <ul>
+            {% for item in items %}
+                {% if item.product.owner == owner %}
+                    <li>{{ item.status }}: {{ item.buyer }} bought {{ item.amount }} pieces of {{ item.product }} from {{ item.product.owner }}</li>
+                {% endif %}
+            {% endfor %}
+         </ul>
+    {% endfor %}
+{% endif %} 
+
+<hr>
+<a href="{% url 'merchstore:item-list' %}">Back</a>

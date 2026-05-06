@@ -1,8 +1,44 @@
 <h1>Merch Store</h1>
-<ul>
-    {% for product in products %}
-        <li>
-            <a href="{{ product.get_absolute_url }}">{{ product.name }}</a>
-        </li>
-    {% endfor %}
-</ul>
+<p>
+    {% if user.is_authenticated and user.profile.role == 'Market Seller' %}
+    <a href="{% url 'merchstore:item-add' %}">Add product</a>
+    {% endif %}
+</p>
+<hr>
+{% if user.is_authenticated %}
+    {% if all_products or user_products %}
+    <ul>
+        <h3>User Products</h3>
+        {% if user_products %}
+            {% for product in user_products %}
+                <li>
+                    <a href="{{ product.get_absolute_url }}">{{ product.name }}</a>
+                </li>
+            {% endfor %}
+        {% else %}
+            <li>No products</li>
+        {% endif %}
+        <h3>All Products</h3>
+        {% if all_products %}
+            {% for product in all_products %}
+                <li>
+                    <a href="{{ product.get_absolute_url }}">{{ product.name }}</a>
+                </li>
+            {% endfor %}
+        {% else %}
+            <li>No products</li>
+        {% endif %}
+    {% endif %}
+    </ul>
+{% else %}
+    {% if all_products %}
+        <ul>
+            {% for product in all_products %}
+                <li>
+                    <a href="{{ product.get_absolute_url }}">{{ product.name }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endif %}
+<a href="{% url 'home' %}">Back</a>

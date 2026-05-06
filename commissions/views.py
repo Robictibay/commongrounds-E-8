@@ -11,7 +11,8 @@ def commission_list(request):
 
 def commission_specific(request, pk):
     commission = Commission.objects.get(pk=pk)
-    ctx = {"commission": commission}
+    jobs = commission.job_set.all()
+    ctx = {"commission": commission, "jobs": jobs}
     return render(request, "commissions/commission_specific.html", ctx)
 
 

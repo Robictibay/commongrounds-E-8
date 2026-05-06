@@ -70,6 +70,12 @@ def commission_update(request, pk):
 
     commission = Commission.objects.get(pk=pk)
 
+    if commission.maker != request.user.profile:
+        return redirect(
+            "commissions:commission_specific",
+            pk=commission.pk
+        )
+
     form = CommissionForm(instance=commission)
 
     if request.method == "POST":

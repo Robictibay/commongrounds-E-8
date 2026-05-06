@@ -28,6 +28,15 @@ def commission_specific(request, pk):
             applicant=request.user.profile
         )
 
+        accepted_count = JobApplication.objects.filter(
+            job=job,
+            status="Accepted"
+        ).count()
+
+        if accepted_count >= job.manpower_required:
+            job.status = "Full"
+            job.save()
+
         return redirect(
             "commissions:commission_specific",
             pk=commission.pk
@@ -58,12 +67,12 @@ def commission_create(request):
             commission.save()
 
             return redirect(
-                "commission:commission_specific",
+                "commissions:commission_specific",
                 pk=commission.pk
             )
     
     ctx = {"form": form}
-    return render(request, "commission/commission_form.html", ctx)
+    return render(request, "commissions/commission_form.html", ctx)
     
 @login_required
 def commission_update(request, pk):

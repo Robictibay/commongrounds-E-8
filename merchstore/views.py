@@ -2,11 +2,12 @@ from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect
-from django.urls import reverse
 from accounts.mixins import RoleRequiredMixin
 from accounts.models import Profile
 from .models import Product, Transaction
 from .forms import ProductForm, TransactionForm
+from .strategies import (AuthenticatedPurchaseStrategy,
+                         GuestPurchaseStrategy)
 
 
 class ProductListView(ListView):
@@ -19,6 +20,19 @@ class ProductListView(ListView):
         if user.is_authenticated:
             context['all_products'] = Product.objects.exclude(owner__user__exact=user)
             context['user_products'] = Product.objects.filter(owner__user__exact=user)
+            if 'pending_transaction' in self.request.session:
+                pending_transaction = self.request.session.pop('pending_transaction')
+                transaction_product = Product.objects.get(id=pending_transaction['product_id'])
+                if transaction_product.owner.user != self.request.user:
+                    Transaction.objects.create(
+                        buyer = Profile.objects.get(user=self.request.user),
+                        product = transaction_product,
+                        amount = pending_transaction['amount'],
+                        status = pending_transaction['status']
+                    )
+                    new_stock = transaction_product.stock - pending_transaction['amount']
+                    transaction_product.stock = new_stock
+                    transaction_product.save(update_fields=['stock'])
         else:
             context['all_products'] = Product.objects.all()
         return context
@@ -36,19 +50,13 @@ class ProductDetailView(DetailView):
     
     def post(self, request, *args, **kwargs):
         form = TransactionForm(request.POST)
+        redirect_to = 'home'
+        strategy = GuestPurchaseStrategy()
         if form.is_valid():
             if self.request.user.is_authenticated:
-                transaction = Transaction()
-                transaction.buyer = self.request.user.profile
-                transaction.product = super().get_object()
-                transaction.amount = form.cleaned_data.get('amount')
-                transaction.status = form.cleaned_data.get('status')  
-                transaction.product.stock = transaction.product.stock - transaction.amount
-                transaction.product.save()      
-                transaction.save()
-                return redirect('merchstore:item-list')
-            else:
-                return redirect('login')
+                strategy = AuthenticatedPurchaseStrategy()
+            redirect_to = strategy.execute(request, super().get_object(), form)
+            return redirect(redirect_to)
         else:
             self.object_list = self.get_queryset(**kwargs)
             context = self.get_context_data(**kwargs)

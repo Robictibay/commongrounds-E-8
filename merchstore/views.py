@@ -13,26 +13,28 @@ from .strategies import (AuthenticatedPurchaseStrategy,
 class ProductListView(ListView):
     model = Product
     template_name = 'merchstore/product_list.html'
-    
+
     def get_context_data(self, **kwargs):
         user = self.request.user
         context = super().get_context_data(**kwargs)
         if user.is_authenticated:
-            context['all_products'] = Product.objects.exclude(owner__user__exact=user)
-            context['user_products'] = Product.objects.filter(owner__user__exact=user)
-            if 'pending_transaction' in self.request.session:
-                pending_transaction = self.request.session.pop('pending_transaction')
-                transaction_product = Product.objects.get(id=pending_transaction['product_id'])
-                if transaction_product.owner.user != self.request.user:
+            owned_items = Product.objects.filter(owner__user__exact=user)
+            all_items = Product.objects.exclude(owner__user__exact=user)
+            context['all_products'] = all_items
+            context['user_products'] = owned_items
+            if 'pending' in self.request.session:
+                transaction = self.request.session.pop('pending')
+                item = Product.objects.get(id=transaction['product_id'])
+                if item.owner.user != self.request.user:
                     Transaction.objects.create(
-                        buyer = Profile.objects.get(user=self.request.user),
-                        product = transaction_product,
-                        amount = pending_transaction['amount'],
-                        status = pending_transaction['status']
+                        buyer=Profile.objects.get(user=self.request.user),
+                        product=item,
+                        amount=transaction['amount'],
+                        status=transaction['status']
                     )
-                    new_stock = transaction_product.stock - pending_transaction['amount']
-                    transaction_product.stock = new_stock
-                    transaction_product.save(update_fields=['stock'])
+                    new_stock = item.stock - transaction['amount']
+                    item.stock = new_stock
+                    item.save(update_fields=['stock'])
         else:
             context['all_products'] = Product.objects.all()
         return context
@@ -47,7 +49,7 @@ class ProductDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         context['form'] = TransactionForm()
         return context
-    
+
     def post(self, request, *args, **kwargs):
         form = TransactionForm(request.POST)
         redirect_to = 'home'
@@ -90,9 +92,11 @@ class CartView(LoginRequiredMixin, ListView):
     redirect_field_name = '/login/'
 
     def get_context_data(self, **kwargs):
+        user = self.request.user
+        buyer = Transaction.objects.filter(buyer__user__exact=user)
         context = super().get_context_data(**kwargs)
-        context['items'] = Transaction.objects.filter(buyer__user__exact=self.request.user)
-        unique_owner_ids = Transaction.objects.filter(buyer__user__exact=self.request.user).order_by().values('product__owner').distinct()
+        context['items'] = buyer
+        unique_owner_ids = buyer.order_by().values('product__owner').distinct()
         context['owners'] = Profile.objects.filter(id__in=unique_owner_ids)
         return context
 
@@ -103,8 +107,10 @@ class TransactionsList(LoginRequiredMixin, ListView):
     redirect_field_name = '/login/'
 
     def get_context_data(self, **kwargs):
+        user = self.request.user
+        owner = Transaction.objects.filter(product__owner__user__exact=user)
         context = super().get_context_data(**kwargs)
-        context['items'] = Transaction.objects.filter(product__owner__user__exact=self.request.user)
-        unique_buyer_ids = Transaction.objects.filter(product__owner__user__exact=self.request.user).order_by().values('buyer').distinct()
+        context['items'] = owner
+        unique_buyer_ids = owner.order_by().values('buyer').distinct()
         context['buyers'] = Profile.objects.filter(id__in=unique_buyer_ids)
         return context

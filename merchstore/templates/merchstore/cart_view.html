@@ -6,7 +6,7 @@
          <ul>
             {% for item in items %}
                 {% if item.product.owner == owner %}
-                    <li>{{ item.status }}: {{ item.buyer }} bought {{ item.amount }} pieces of {{ item.product }} from {{ item.product.owner }}</li>
+                    <li>[{{ item.created_on }}] {{ item.status }}: You bought {{ item.amount }} pieces of {{ item.product }} from {{ item.product.owner }}</li>
                 {% endif %}
             {% endfor %}
          </ul>

@@ -28,14 +28,14 @@ class ProjectListView(ListView):
                 favorited_by__profile=profile
             ).values_list("pk", flat=True)
             reviewed_pk = Project.objects.filter(
-                reviewed__reviewer=profile
+                reviews__reviewer=profile
             ).values_list("pk", flat=True)
 
             featured_pk = set(created_pk) | set(favorited_pk) | set(reviewed_pk)
 
             created = Project.objects.filter(creator=profile)
             favorited = Project.objects.filter(favorited_by__profile=profile)
-            reviewed = Project.objects.filter(reviewed__reviewer=profile).distinct()
+            reviewed = Project.objects.filter(reviews__reviewer=profile).distinct()
 
             context["created_projects"] = created
             context["favorited_projects"] = favorited
@@ -75,7 +75,7 @@ class ProjectDetailView(DetailView):
         context["average_scores"] = self.get_avg_ratings()
         context["favorite_count"] = self.get_favorite_count()
         context["is_creator"] = user.is_authenticated and profile == self.object.creator
-        context["project_reviews"] = self.object.reviewed.all()
+        context["project_reviews"] = self.object.reviews.all()
         return context
 
     def post(self, request, *args, **kwargs):

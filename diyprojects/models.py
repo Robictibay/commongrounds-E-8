@@ -81,13 +81,13 @@ class ProjectReview(models.Model):
         Project,
         on_delete=models.CASCADE,
         null=True,
-        related_name="reviewed",
+        related_name="reviews",
     )
     reviewer = models.ForeignKey(
         Profile,
         on_delete=models.CASCADE,
         null=True,
-        related_name="reviews",
+        related_name="project_reviews",
     )
     comment = models.TextField()
     image = models.ImageField(upload_to="images/", null=False, blank=False)

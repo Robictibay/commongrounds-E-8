@@ -52,7 +52,7 @@ class BookReview(models.Model):
         on_delete=models.CASCADE,
         null=True,
         blank=True,
-        related_name='reviews'
+        related_name='book_reviews'
     )
     anon_reviewer = models.TextField()
     book = models.ForeignKey(

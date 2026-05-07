@@ -2,15 +2,64 @@
 
 {% block body %}
 <h1>All Books</h1>
+
+{% if request.user.is_authenticated %}
+    <hr>
+        <h3>Books You Contributed</h2>
+        <ul>
+            {% for book in contributed_books %}
+                <li style="list-style-type:square;">
+                    <a href="{{ book.get_absolute_url }}"><strong>{{ book.title }}</strong></a>
+                    <br>{{ book.author }} · {{ book.publication_year }}
+                </li>
+                <br>
+            {% empty %}
+                <li style="list-style-type:square;">None</li>
+            {% endfor %}
+        </ul>
+
+        <h3>Bookmarked Books</h2>
+        <ul>
+            {% for book in bookmarked_books %}
+                <li style="list-style-type:square;">
+                    <a href="{{ book.get_absolute_url }}"><strong>{{ book.title }}</strong></a>
+                    <br>{{ book.author }} · {{ book.publication_year }}
+                </li>
+                <br>
+            {% empty %}
+                <li style="list-style-type:square;">None</li>
+            {% endfor %}
+        </ul>
+
+        <h3>Books You Reviewed</h2>
+        <ul>
+            {% for book in reviewed_books %}
+                <li style="list-style-type:square;">
+                    <a href="{{ book.get_absolute_url }}"><strong>{{ book.title }}</strong></a>
+                    <br>{{ book.author }} · {{ book.publication_year }}
+                </li>
+                <br>
+            {% empty %}
+                <li style="list-style-type:square;">None</li>
+            {% endfor %}
+        </ul>
+
+{% endif %}
+
+<hr>
 <ul>
     {% for book in books %}
         <li style="list-style-type:square;">
             <a href="{{ book.get_absolute_url }}"><strong>{{ book.title }}</strong></a> 
             <br>{{ book.author }} · {{ book.publication_year }}
         </li>
+        
         <br>
     {% empty %}
         <li>No books found.</li>
     {% endfor %}
 </ul>
+
+<a href="{% url 'bookclub:book-create' %}">Add a Book</a>
+
 {% endblock %}

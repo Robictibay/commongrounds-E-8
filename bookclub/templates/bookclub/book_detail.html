@@ -1,14 +1,79 @@
 {% extends 'bookclub/base.html' %}
 
 {% block body %}
+<p><strong>Bookmarks:</strong> {{ bookmark_count }}</p>
+<form method="post">
+    {% csrf_token %}
+    <input type="hidden" name="action" value="bookmark">
+    {% if is_bookmarked %}
+        <button type="submit">Unbookmark</button>
+    {% else %}
+        <button type="submit">Bookmark</button>
+    {% endif %}
+    {% if messages %}
+        {% for message in messages %}
+            &nbsp{{ message }}
+        {% endfor %}
+    {% endif %}
+</form>
+
+<hr>
+
 <h1>{{ book.title }}</h1>
 <p><strong>Author:</strong> {{ book.author }}</p>
-<p><strong>Year of Publication:</strong> {{ book.publication_year}}</p>
+<p><strong>Year of Publication:</strong> {{ book.publication_year }}</p>
 <p><strong>Genre:</strong> {{ book.genre.name }}</p>
+<p><strong>Synopsis:</strong>
+    {% if book.synopsis %}
+        {{ book.synopsis }}
+    {% else %}
+        No synopsis available.
+    {% endif %}
+</p>
+<p><strong>Contributed by:</strong> {{ book.contributor.display_name }}</p>
+{% if book.available_to_borrow %}
+    <p><a href="{% url 'bookclub:book-borrow' pk=book.pk %}">Borrow this Book</a></p>
+{% endif %}
+{% if is_contributor %}
+    <p><a href="{% url 'bookclub:book-update' pk=book.pk %}">Edit Book</a></p>
+{% endif %}
+
 <hr>
+
 <p>
     <strong>{{ book.genre.name }}</strong>
     <br><br>- {{ book.genre.description }}
 </p>
+
+<hr>
+
+<h3>Reviews</h3>
+
+<ul>
+    {% for review in reviews %}
+        <li style="list-style-type:square;">
+            <strong>{{ review.title }}</strong> by
+            {% if review.user_reviewer %}
+                {{ review.user_reviewer.display_name }}
+            {% else %}
+                Anonymous
+            {% endif %}
+            <p>{{ review.comment }}</p>
+        </li>
+    {% empty %}
+        <li style="list-style-type:none;">No reviews yet.</li>
+    {% endfor %}
+</ul>
+
+<h3>Post a Comment</h3>
+
+<form method="post">
+    {% csrf_token %}
+    <input type="hidden" name="action" value="review">
+    <p>{{ review_form.title.label_tag }}<br>{{ review_form.title }}</p>
+    <p>{{ review_form.comment.label_tag }}<br>{{ review_form.comment }}</p>
+    <button type="submit">Submit</button>
+</form>
+
 <a href="{% url 'bookclub:book-list' %}">Back to all books</a>
 {% endblock %}

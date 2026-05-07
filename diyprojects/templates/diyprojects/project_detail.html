@@ -11,5 +11,52 @@
     <strong>{{ project.category.name }}</strong>
     <br><br>- {{ project.category.description }}
 </p>
+
+<form method="post">
+    {% csrf_token %}
+    {{ rating_form }}
+    <button type="submit" name="form_type" value="rating">
+        Rate
+    </button>
+</form>
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ review_form }}
+    <button type="submit" name="form_type" value="review">
+        Submit Review
+    </button>
+</form>
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" name="form_type" value="favorite">
+        Favorite
+
+    </button>
+</form>
+
+<p><strong>Average Score:</strong> {{ average_scores }}</p>
+
+<p><strong>Favorite Count:</strong> {{ favorite_count }}</p>
+
+<p><strong>Reviews:</strong></p>
+    <ul>
+        {% for review in project_reviews %}
+        <li>
+           {{ review.comment }}
+           <img src="{{ review.image.url }}" alt="{{ review.comment }}" width="300">
+        </li>
+    {% empty %}
+        <li>No reviews.</li>
+    {% endfor %}
+    </ul>
+
+{% if is_creator %}
+<a href="{% url 'diyprojects:project-update' project.pk %}">
+        Edit Project
+</a>
+{% endif %}
+
 <a href="{% url 'diyprojects:project-list' %}">Back to projects.</a>
 {% endblock %}

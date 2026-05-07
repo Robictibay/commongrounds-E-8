@@ -2,6 +2,8 @@
 {% block title %}Project List{% endblock %}
 {% block content %}
 <h1>DIY Projects</h1>
+
+<h2>All Projects</h2>
 <ul>
     {% for project in projects %}
         <li>
@@ -9,7 +11,50 @@
             (Category: {{ project.category.name }}) - {{ project.category.description }}
         </li>
     {% empty %}
-        <li>No projects found.</li>
+        <li>No projects to display in this section.</li>
     {% endfor %}
 </ul>
+
+{% if user.is_authenticated %}
+    <h2>Projects Created</h2>
+    <ul>
+        {% for project in created_projects %}
+        <li>
+            <a href="{{project.get_absolute_url}}">{{project.title}}</a>
+            (Category: {{ project.category.name }}) - {{ project.category.description }}
+        </li>
+    {% empty %}
+        <li>No created projects.</li>
+    {% endfor %}
+    </ul>
+
+    <h2>Projects Favorited</h2>
+    <ul>
+        {% for project in favorited_projects %}
+        <li>
+            <a href="{{project.get_absolute_url}}">{{project.title}}</a>
+            (Category: {{ project.category.name }}) - {{ project.category.description }}
+        </li>
+    {% empty %}
+        <li>No favorited projects.</li>
+    {% endfor %}
+    </ul>
+
+    <h2>Projects Reviewed</h2>
+    <ul>
+        {% for project in reviewed_projects %}
+        <li>
+            <a href="{{project.get_absolute_url}}">{{project.title}}</a>
+            (Category: {{ project.category.name }}) - {{ project.category.description }}
+        </li>
+    {% empty %}
+        <li>No reviewed projects.</li>
+    {% endfor %}
+    </ul>
+{% endif %}
+
+<a href="{% url 'diyprojects:project-create' %}">
+        Create Project
+</a>
+
 {% endblock %}

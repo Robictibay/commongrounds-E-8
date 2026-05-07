@@ -1,0 +1,29 @@
+<h1>Common Grounds</h1>
+
+{% if user.is_authenticated %}
+    <p>Logged in as: <strong>{{ user.username }}</strong></p>
+    {% if user.profile %}
+        <p>Display Name: {{ user.profile.display_name }} (Role: {{ user.profile.role }})</p>
+    {% endif %}
+    <p>
+        <a href="{% url 'accounts:profile-update' user.username %}">Update Profile Display Name</a>
+    </p>
+    <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button type="submit">Logout</button>
+    </form>
+{% else %}
+    <p>
+        <a href="{% url 'login' %}">Login</a> | <a href="{% url 'accounts:register' %}">Register</a>
+    </p>
+{% endif %}
+
+<hr>
+<h2>Apps</h2>
+<ul>
+    <li><a href="/localevents/events">Local Events</a></li>
+    <li><a href="/merchstore/items">Merchandise Store</a></li>
+    <li><a href="/bookclub/books">Book Club</a></li>
+    <li><a href="/diyprojects/projects">DIY Projects</a></li>
+    <li><a href="/commissions/requests">Commissions</a></li>
+</ul>

@@ -1,0 +1,70 @@
+<h1>{{ commission.title }}</h1>
+
+<p><strong>Description:</strong> {{ commission.description }}</p>
+
+<p><strong>People Required:</strong> {{ commission.people_required }}</p>
+
+<p> 
+    <strong>Total Manpower:</strong>
+    {{ total_manpower }}
+
+
+</p>
+
+<p>
+    <strong>Open Manpower:</strong>
+    {{ open_manpower }}
+</p>
+
+<p><strong>Created On:</strong> {{ commission.created_on }}</p>
+
+<p><strong>Updated On:</strong> {{ commission.updated_on }}</p>
+
+<br>
+
+<h2>Jobs Needed</h2>
+
+{% if jobs %}
+    <ul>
+        {% for job in jobs %}
+            <li>
+                {{ job.role }}
+                -
+                {{ job.manpower_required }} people needed
+                -
+                {{ job.status }}
+                
+                {% if user.is_authenticated and commission.maker != user.profile %}
+                    <form method="post">
+                        {% csrf_token %}
+
+                        <input type="hidden" name="job_id" value="{{ job.pk }}">
+
+                        {% if job.status == "Full" %}
+                        <button type="submit" disabled>
+                            Job Full
+                        </button>
+                        {% else %}
+                            <button type="submit">
+                                Apply to Job
+                            </button>
+                        {% endif %}
+                    </form>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No Jobs available.</p>
+{% endif %}
+
+<br>
+{% if user.is_authenticated and commission.maker == user.profile %}
+    <a href="{% url 'commissions:commission_update' commission.pk %}">
+        Edit Commission
+    </a>
+
+    <br><br>
+{% endif %}
+
+<a href="{% url 'commissions:commission_list' %}">Back to Commission List</a>   

@@ -1,7 +1,48 @@
 <h1>{{ event.title }}</h1>
 <p><strong>Category:</strong> {{ event.category.name|default:"Uncategorized" }}</p>
+
+{% if event.event_image %}
+    <img src="{{ event.event_image.url }}" alt="{{ event.title }}" style="max-width: 400px; display: block; margin-bottom: 15px;">
+{% else %}
+    <p><i>No event image provided.</i></p>
+{% endif %}
+
 <p><strong>Location:</strong> {{ event.location }}</p>
 <p><strong>Time:</strong> {{ event.start_time }} to {{ event.end_time }}</p>
+
+<p><strong>Capacity:</strong> {{ event.event_capacity }}</p>
+<p><strong>Status:</strong> {{ event.status }}</p>
+<p><strong>Organizers:</strong> 
+    {% for org in event.organizer.all %}
+        {{ org.display_name }}{% if not forloop.last %}, {% endif %}
+    {% empty %}
+        None assigned
+    {% endfor %}
+</p>
+
+<h3>Attendees ({{ event.eventsignup_set.count }} / {{ event.event_capacity }})</h3>
+
+{% if event.status == 'Available' %}
+    <form action="{% url 'localevents:event-signup' event.pk %}" method="post" style="margin-bottom: 20px;">
+        {% csrf_token %}
+        {% if user.is_authenticated %}
+            <button type="submit">Sign Up as {{ user.profile.display_name }}</button>
+        {% else %}
+            <label for="new_registrant">Guest Name:</label>
+            <input type="text" name="new_registrant" required>
+            <button type="submit">Sign Up as Guest</button>
+        {% endif %}
+    </form>
+{% else %}
+    <p style="color: red;"><strong>This event is currently {{ event.status }}.</strong></p>
+{% endif %}
+
 <hr>
 <p>{{ event.description }}</p>
+<br>
+
+{% if user.is_authenticated and user.profile in event.organizer.all %}
+    <p><a href="{% url 'localevents:event-update' event.pk %}">✏️ Edit this Event</a></p>
+{% endif %}
+
 <a href="{% url 'localevents:event-list' %}">Back to all events</a>

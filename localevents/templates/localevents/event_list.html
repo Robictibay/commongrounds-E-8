@@ -1,4 +1,11 @@
 <h1>Local Events</h1>
+
+<!-- Only Event Organizers see the create button -->
+{% if user.is_authenticated and user.profile.role == 'Event Organizer' %}
+    <p><a href="{% url 'localevents:event-create' %}">+ Host a New Event</a></p>
+{% endif %}
+<hr>
+
 <ul>
     {% for event in events %}
         <li>
@@ -9,3 +16,6 @@
         <li>No events found.</li>
     {% endfor %}
 </ul>
+
+<br>
+<a href="{% url 'home' %}">Back to Home</a>

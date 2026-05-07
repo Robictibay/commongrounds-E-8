@@ -3,20 +3,6 @@
         <title>Book Club App</title>
     </head>
     <body>
-        <nav>
-            {% if user.is_authenticated %}
-                <p>Logged in as: <strong>{{ user.username }}</strong></p>
-                <form method="POST" action="{% url 'logout' %}">
-                    {% csrf_token %}
-                    <button type="submit">Logout</button>
-                </form>
-            {% else %}
-                <form action="{% url 'login' %}">
-                    <button type="submit">Login</button>
-                </form>
-            {% endif %}
-        </nav>
-        <hr>
         {% block body %}{% endblock %}
     </body>
 

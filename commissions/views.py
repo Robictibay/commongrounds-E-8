@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .models import Commission, Job, JobApplication
-from .forms import CommissionForm
+from .forms import CommissionForm, JobForm
 
 
 
@@ -36,11 +36,31 @@ def commission_list(request):
 def commission_specific(request, pk):
     commission = Commission.objects.get(pk=pk)
     jobs = commission.job_set.all()
+    job_form = JobForm()
 
     if request.method == "POST":
 
         if not request.user.is_authenticated:
             return redirect("login")
+        
+        if "add_job" in request.POST:
+            
+            if commission.maker != request.user.profile:
+                return redirect(
+                    "commissions:commission_specific",
+                    pk=commission.pk
+                )
+            job_form = JobForm(request.POST)
+
+            if job_form.is_valid():
+                job = job_form.save(commit=False)
+                job.commission = commission
+                job.save()
+
+                return redirect(
+                    "commissions:commission_specific",
+                    pk=commission.pk
+                )
 
         job = Job.objects.get(
             pk=request.POST.get("job_id")
@@ -100,6 +120,7 @@ def commission_specific(request, pk):
     ctx = {
         "commission": commission,
         "jobs": jobs,
+        "job_form": job_form,
         "total_manpower": total_manpower,
         "open_manpower": open_manpower}
     return render(request, "commissions/commission_specific.html", ctx)

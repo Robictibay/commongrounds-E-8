@@ -22,6 +22,21 @@
 
 <br>
 
+{% if user.is_authenticated and commission.maker == user.profile %}
+    <h2>Add Job</h2>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ job_form.as_p }}
+
+        <button type="submit" name="add_job">
+            Add Job
+        </button>
+    </form>
+
+    <br>
+{% endif %}
+
 <h2>Jobs Needed</h2>
 
 {% if jobs %}

@@ -6,4 +6,3 @@ admin.site.register(CommissionType)
 admin.site.register(Commission)
 admin.site.register(Job)
 admin.site.register(JobApplication)
-

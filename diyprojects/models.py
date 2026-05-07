@@ -14,21 +14,21 @@ class ProjectCategory(models.Model):
         verbose_name_plural = "Project Categories"
 
     def __str__(self):
-        return self.name  
-   
-    
+        return self.name
+
+
 class Project(models.Model):
     title = models.CharField(max_length=255)
     category = models.ForeignKey(
-        ProjectCategory, 
-        on_delete=models.SET_NULL, 
-        null=True, 
+        ProjectCategory,
+        on_delete=models.SET_NULL,
+        null=True,
         related_name="projects"
     )
     creator = models.ForeignKey(
-        Profile, 
-        on_delete=models.SET_NULL, 
-        null=True, 
+        Profile,
+        on_delete=models.SET_NULL,
+        null=True,
         related_name="created_projects"
     )
     description = models.TextField()
@@ -42,7 +42,7 @@ class Project(models.Model):
 
     def __str__(self):
         return self.title
-    
+
     def get_absolute_url(self):
         return reverse("diyprojects:project-detail", args=[str(self.id)])
 

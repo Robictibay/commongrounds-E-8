@@ -4,7 +4,6 @@ from .models import Commission, Job, JobApplication
 from .forms import CommissionForm, JobForm
 
 
-
 def commission_list(request):
     commissions = Commission.objects.all()
 
@@ -42,9 +41,9 @@ def commission_specific(request, pk):
 
         if not request.user.is_authenticated:
             return redirect("login")
-        
+
         if "add_job" in request.POST:
-            
+
             if commission.maker != request.user.profile:
                 return redirect(
                     "commissions:commission_specific",
@@ -109,18 +108,18 @@ def commission_specific(request, pk):
     job_open_slots = {}
     total_manpower = 0
     open_manpower = 0
-    
+
     for job in jobs:
         accepted_count = JobApplication.objects.filter(
             job=job,
             status="Accepted"
         ).count()
-    
+
         remaining = job.manpower_required - accepted_count
         job_open_slots[job.pk] = remaining
         total_manpower += job.manpower_required
         open_manpower += remaining
-    
+
     ctx = {
         "commission": commission,
         "jobs": jobs,
@@ -130,6 +129,7 @@ def commission_specific(request, pk):
         "job_open_slots": job_open_slots,  # ← add this
     }
     return render(request, "commissions/commission_specific.html", ctx)
+
 
 @login_required
 def commission_create(request):

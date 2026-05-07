@@ -14,7 +14,9 @@ class AuthenticatedPurchaseStrategy(BaseTransactionStrategy):
         transaction.buyer = request.user.profile
         transaction.product = product
         transaction.amount = form.cleaned_data.get('amount')
-        transaction.status = form.cleaned_data.get('status')  
+        transaction.status = form.cleaned_data.get('status')
+        if transaction.amount > transaction.product.stock:
+            transaction.amount = transaction.product.stock
         transaction.product.stock = (transaction.product.stock
                                      - transaction.amount)
         transaction.product.save()
@@ -24,9 +26,12 @@ class AuthenticatedPurchaseStrategy(BaseTransactionStrategy):
 
 class GuestPurchaseStrategy(BaseTransactionStrategy):
     def execute(self, request, product, form):
+        transaction_amount = form.cleaned_data.get('amount')
+        if transaction_amount > product.stock:
+            transaction_amount = product.stock
         request.session['pending'] = {
             'product_id': product.id,
-            'amount': form.cleaned_data.get('amount'),
+            'amount': transaction_amount,
             'status': form.cleaned_data.get('status')
         }
         return 'login'

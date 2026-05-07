@@ -5,15 +5,18 @@ from accounts.mixins import RoleRequiredMixin
 from .models import Event, EventSignup
 from .forms import EventForm
 
+
 class EventListView(ListView):
     model = Event
     template_name = 'localevents/event_list.html'
     context_object_name = 'events'
 
+
 class EventDetailView(DetailView):
     model = Event
     template_name = 'localevents/event_detail.html'
     context_object_name = 'event'
+
 
 class EventCreateView(RoleRequiredMixin, CreateView):
     model = Event
@@ -25,6 +28,7 @@ class EventCreateView(RoleRequiredMixin, CreateView):
         response = super().form_valid(form)
         self.object.organizer.add(self.request.user.profile)
         return response
+
 
 class EventUpdateView(RoleRequiredMixin, UpdateView):
     model = Event
@@ -38,24 +42,23 @@ class EventUpdateView(RoleRequiredMixin, UpdateView):
                 form.instance.status = 'Full'
             else:
                 form.instance.status = 'Available'
-                
+
         return super().form_valid(form)
+
+
 def signup_for_event(request, pk):
     event = get_object_or_404(Event, pk=pk)
-    
+
     if request.method == 'POST':
-        # Prevent signups if the event is no longer available
         if event.status != 'Available':
             return redirect('localevents:event-detail', pk=pk)
 
-        # 1. Create the signup (Auth User vs Guest)
         if request.user.is_authenticated:
-            # NEW: Check if the user is already signed up!
             already_registered = EventSignup.objects.filter(
-                event=event, 
+                event=event,
                 user_registrant=request.user.profile
             ).exists()
-            
+
             if not already_registered:
                 EventSignup.objects.create(event=event, user_registrant=request.user.profile)
         else:
@@ -63,7 +66,6 @@ def signup_for_event(request, pk):
             if guest_name:
                 EventSignup.objects.create(event=event, new_registrant=guest_name)
 
-        # 2. Automatically update status to 'Full' if capacity is reached
         if event.eventsignup_set.count() >= event.event_capacity:
             event.status = 'Full'
             event.save()

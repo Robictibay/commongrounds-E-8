@@ -1,6 +1,7 @@
 from django.db import models
 from django.urls import reverse
 
+
 class EventType(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
@@ -10,6 +11,7 @@ class EventType(models.Model):
 
     def __str__(self):
         return self.name
+
 
 class Event(models.Model):
     STATUS_AVAILABLE = 'Available'
@@ -34,7 +36,7 @@ class Event(models.Model):
     organizer = models.ManyToManyField(
         'accounts.Profile',
         related_name='organized_events',
-        blank=True 
+        blank=True
     )
     event_image = models.ImageField(upload_to='localevents/images/', blank=True, null=True)
     description = models.TextField()
@@ -43,11 +45,11 @@ class Event(models.Model):
     end_time = models.DateTimeField()
     event_capacity = models.PositiveIntegerField(default=0)
     status = models.CharField(
-        max_length=50, 
-        choices=STATUS_CHOICES, 
+        max_length=50,
+        choices=STATUS_CHOICES,
         default=STATUS_AVAILABLE
     )
-    
+
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
 
@@ -60,7 +62,7 @@ class Event(models.Model):
     def get_absolute_url(self):
         return reverse('localevents:event-detail', args=[str(self.id)])
 
-# NEW MODEL FOR FINAL PROJECT
+
 class EventSignup(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
     user_registrant = models.ForeignKey(

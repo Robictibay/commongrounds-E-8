@@ -61,49 +61,49 @@ def commission_specific(request, pk):
                     "commissions:commission_specific",
                     pk=commission.pk
                 )
+        if "apply_job" in request.POST:
+            job = Job.objects.get(
+                pk=request.POST.get("job_id")
+            )
 
-        job = Job.objects.get(
-            pk=request.POST.get("job_id")
-        )
+            already_applied = JobApplication.objects.filter(
+                job=job,
+                applicant=request.user.profile
+            ).exists()
 
-        already_applied = JobApplication.objects.filter(
-            job=job,
-            applicant=request.user.profile
-        ).exists()
+            if already_applied:
+                return redirect(
+                    "commissions:commission_specific",
+                    pk=commission.pk
+                )
 
-        if already_applied:
+            JobApplication.objects.create(
+                job=job,
+                applicant=request.user.profile
+            )
+
+            accepted_count = JobApplication.objects.filter(
+                job=job,
+                status="Accepted"
+            ).count()
+
+            if accepted_count >= job.manpower_required:
+                job.status = "Full"
+                job.save()
+
+            all_full = True
+
+            for current_job in jobs:
+                if current_job.status != "Full":
+                    all_full = False
+
+            if all_full:
+                commission.status = "Full"
+                commission.save()
             return redirect(
                 "commissions:commission_specific",
                 pk=commission.pk
             )
-
-        JobApplication.objects.create(
-            job=job,
-            applicant=request.user.profile
-        )
-
-        accepted_count = JobApplication.objects.filter(
-            job=job,
-            status="Accepted"
-        ).count()
-
-        if accepted_count >= job.manpower_required:
-            job.status = "Full"
-            job.save()
-
-        all_full = True
-
-        for current_job in jobs:
-            if current_job.status != "Full":
-                all_full = False
-
-        if all_full:
-            commission.status = "Full"
-            commission.save()
-        return redirect(
-            "commissions:commission_specific",
-            pk=commission.pk
-        )
 
     total_manpower = 0
     open_manpower = 0

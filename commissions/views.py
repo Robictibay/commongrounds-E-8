@@ -103,21 +103,8 @@ def commission_specific(request, pk):
         "open_manpower": open_manpower}
     return render(request, "commissions/commission_specific.html", ctx)
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-<<<<<<< HEAD
-
-# Create your views here.
-=======
-=======
-=======
-
->>>>>>> 0d6c855 (made syntax changes to fix errors and applied pep8)
 @login_required
->>>>>>> 92a9ca9 (restricted create commissions and update commissions based on login)
 def commission_create(request):
-
     if request.user.profile.role != "Commission Maker":
         return redirect("commissions:commission_list")
 
@@ -142,7 +129,6 @@ def commission_create(request):
 
 @login_required
 def commission_update(request, pk):
-
     if request.user.profile.role != "Commission Maker":
         return redirect("commissions:commission_list")
 
@@ -168,9 +154,3 @@ def commission_update(request, pk):
 
     ctx = {"form": form, "commission": commission}
     return render(request, "commissions/commission_form.html", ctx)
-<<<<<<< HEAD
-
-
->>>>>>> 30c113c (added Create Commission view, url, and template)
-=======
->>>>>>> 0d6c855 (made syntax changes to fix errors and applied pep8)

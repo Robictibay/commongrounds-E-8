@@ -62,6 +62,11 @@ class Job(models.Model):
         default='Open'
     )
 
+    def open_slots(self):
+        return self.manpower_required - self.jobapplication_set.filter(
+            status="Accepted"
+        ).count()
+
     class Meta:
         ordering = ['status', '-manpower_required', 'role']
 

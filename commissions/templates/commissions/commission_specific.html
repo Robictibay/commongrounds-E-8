@@ -45,7 +45,7 @@
             <li>
                 {{ job.role }}
                 -
-                {{ job.manpower_required }} people needed
+                {{ job.open_slots }} people needed
                 -
                 {{ job.status }}
                 
@@ -56,13 +56,9 @@
                         <input type="hidden" name="job_id" value="{{ job.pk }}">
 
                         {% if job.status == "Full" %}
-                        <button type="submit" disabled>
-                            Job Full
-                        </button>
+                            <button type="submit" disabled>Job Full</button>
                         {% else %}
-                            <button type="submit">
-                                Apply to Job
-                            </button>
+                            <button type="submit" name="apply_job">Apply to Job</button>
                         {% endif %}
                     </form>
                 {% endif %}

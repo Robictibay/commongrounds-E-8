@@ -62,67 +62,73 @@ def commission_specific(request, pk):
                     pk=commission.pk
                 )
 
-        job = Job.objects.get(
-            pk=request.POST.get("job_id")
-        )
+        if "apply_job" in request.POST:
+            job = Job.objects.get(
+                pk=request.POST.get("job_id")
+            )
 
-        already_applied = JobApplication.objects.filter(
-            job=job,
-            applicant=request.user.profile
-        ).exists()
+            already_applied = JobApplication.objects.filter(
+                job=job,
+                applicant=request.user.profile
+            ).exists()
 
-        if already_applied:
+            if already_applied:
+                return redirect(
+                    "commissions:commission_specific",
+                    pk=commission.pk
+                )
+
+            JobApplication.objects.create(
+                job=job,
+                applicant=request.user.profile
+            )
+
+            accepted_count = JobApplication.objects.filter(
+                job=job,
+                status="Accepted"
+            ).count()
+
+            if accepted_count >= job.manpower_required:
+                job.status = "Full"
+                job.save()
+
+            all_full = True
+
+            for current_job in jobs:
+                if current_job.status != "Full":
+                    all_full = False
+
+            if all_full:
+                commission.status = "Full"
+                commission.save()
             return redirect(
                 "commissions:commission_specific",
                 pk=commission.pk
             )
 
-        JobApplication.objects.create(
-            job=job,
-            applicant=request.user.profile
-        )
-
-        accepted_count = JobApplication.objects.filter(
-            job=job,
-            status="Accepted"
-        ).count()
-
-        if accepted_count >= job.manpower_required:
-            job.status = "Full"
-            job.save()
-
-        all_full = True
-
-        for current_job in jobs:
-            if current_job.status != "Full":
-                all_full = False
-
-        if all_full:
-            commission.status = "Full"
-            commission.save()
-        return redirect(
-            "commissions:commission_specific",
-            pk=commission.pk
-        )
-
+    job_open_slots = {}
     total_manpower = 0
     open_manpower = 0
-
+    
     for job in jobs:
         accepted_count = JobApplication.objects.filter(
             job=job,
             status="Accepted"
         ).count()
-
+    
+        remaining = job.manpower_required - accepted_count
+        job_open_slots[job.pk] = remaining
         total_manpower += job.manpower_required
-        open_manpower += job.manpower_required - accepted_count
-
+        open_manpower += remaining
+    
     ctx = {
         "commission": commission,
         "jobs": jobs,
         "job_form": job_form,
         "total_manpower": total_manpower,
-        "open_manpower": open_manpower}
+        "open_manpower": open_manpower,
+        "job_open_slots": job_open_slots,  # ← add this
+    }
     return render(request, "commissions/commission_specific.html", ctx)
 
 @login_required

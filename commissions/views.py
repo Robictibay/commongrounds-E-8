@@ -25,8 +25,10 @@ def commission_list(request):
         ).exclude(
             pk__in=applied_commissions
         )
-        
-    ctx = {"commissions": commissions, "created_commissions": created_commissions, "applied_commissions": applied_commissions}
+
+    ctx = {"commissions": commissions,
+           "created_commissions": created_commissions,
+           "applied_commissions": applied_commissions}
     return render(request, "commissions/commission_list.html", ctx)
 
 
@@ -38,22 +40,22 @@ def commission_specific(request, pk):
 
         if not request.user.is_authenticated:
             return redirect("login")
-    
+
         job = Job.objects.get(
             pk=request.POST.get("job_id")
         )
-        
+
         already_applied = JobApplication.objects.filter(
             job=job,
             applicant=request.user.profile
         ).exists()
-        
+
         if already_applied:
             return redirect(
                 "commissions:commission_specific",
                 pk=commission.pk
             )
-        
+
         JobApplication.objects.create(
             job=job,
             applicant=request.user.profile
@@ -73,7 +75,7 @@ def commission_specific(request, pk):
         for current_job in jobs:
             if current_job.status != "Full":
                 all_full = False
-        
+
         if all_full:
             commission.status = "Full"
             commission.save()
@@ -81,7 +83,7 @@ def commission_specific(request, pk):
             "commissions:commission_specific",
             pk=commission.pk
         )
-    
+
     total_manpower = 0
     open_manpower = 0
 
@@ -94,9 +96,14 @@ def commission_specific(request, pk):
         total_manpower += job.manpower_required
         open_manpower += job.manpower_required - accepted_count
 
-    ctx = {"commission": commission, "jobs": jobs, "total_manpower": total_manpower, "open_manpower": open_manpower}
+    ctx = {
+        "commission": commission,
+        "jobs": jobs,
+        "total_manpower": total_manpower,
+        "open_manpower": open_manpower}
     return render(request, "commissions/commission_specific.html", ctx)
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 <<<<<<< HEAD
@@ -104,6 +111,9 @@ def commission_specific(request, pk):
 # Create your views here.
 =======
 =======
+=======
+
+>>>>>>> 0d6c855 (made syntax changes to fix errors and applied pep8)
 @login_required
 >>>>>>> 92a9ca9 (restricted create commissions and update commissions based on login)
 def commission_create(request):
@@ -125,16 +135,17 @@ def commission_create(request):
                 "commissions:commission_specific",
                 pk=commission.pk
             )
-    
+
     ctx = {"form": form}
     return render(request, "commissions/commission_form.html", ctx)
-    
+
+
 @login_required
 def commission_update(request, pk):
 
     if request.user.profile.role != "Commission Maker":
         return redirect("commissions:commission_list")
-    
+
     commission = Commission.objects.get(pk=pk)
 
     if commission.maker != request.user.profile:
@@ -154,9 +165,12 @@ def commission_update(request, pk):
                 "commissions:commission_specific",
                 pk=commission.pk
             )
-        
+
     ctx = {"form": form, "commission": commission}
     return render(request, "commissions/commission_form.html", ctx)
+<<<<<<< HEAD
 
 
 >>>>>>> 30c113c (added Create Commission view, url, and template)
+=======
+>>>>>>> 0d6c855 (made syntax changes to fix errors and applied pep8)

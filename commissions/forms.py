@@ -33,4 +33,3 @@ class JobApplicationForm(forms.ModelForm):
         fields = [
             'status'
         ]
-        

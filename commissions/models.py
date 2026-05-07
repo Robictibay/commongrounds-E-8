@@ -1,5 +1,5 @@
 from django.db import models
-from accounts.models import Profile 
+from accounts.models import Profile
 
 
 class CommissionType(models.Model):
@@ -23,6 +23,10 @@ class Commission(models.Model):
         null=True,
         blank=True
     )
+    maker = models.ForeignKey(
+        Profile,
+        on_delete=models.CASCADE
+    )
     people_required = models.PositiveIntegerField()
     status = models.CharField(
         max_length=20,
@@ -38,7 +42,7 @@ class Commission(models.Model):
     class Meta:
         ordering = ["created_on"]
         verbose_name_plural = "Commissions"
-    
+
     def __str__(self):
         return self.title
 
@@ -60,11 +64,11 @@ class Job(models.Model):
     )
 
     class Meta:
-        ordering = ['status', '-manpower_required' 'role']
-    
+        ordering = ['status', '-manpower_required', 'role']
+
     def __str__(self):
         return self.role
-    
+
 
 class JobApplication(models.Model):
     job = models.ForeignKey(
@@ -91,5 +95,3 @@ class JobApplication(models.Model):
 
     def __str__(self):
         return str(self.applicant)
-
-

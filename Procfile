@@ -1,1 +1,1 @@
-web: gunicorn commongrounds.wsgi:application --log-file -
+web: python manage.py collectstatic --noinput && gunicorn commongrounds.wsgi:application --log-file -

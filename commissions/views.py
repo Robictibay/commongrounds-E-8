@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .models import Commission, Job, JobApplication
 from .forms import CommissionForm, JobForm
+from accounts.decorators import role_required
 
 
 def commission_list(request):
@@ -131,11 +132,8 @@ def commission_specific(request, pk):
     return render(request, "commissions/commission_specific.html", ctx)
 
 
-@login_required
+@role_required("Commission Maker")
 def commission_create(request):
-    if request.user.profile.role != "Commission Maker":
-        return redirect("commissions:commission_list")
-
     form = CommissionForm()
 
     if request.method == "POST":
@@ -155,11 +153,8 @@ def commission_create(request):
     return render(request, "commissions/commission_form.html", ctx)
 
 
-@login_required
+@role_required("Commission Maker")
 def commission_update(request, pk):
-    if request.user.profile.role != "Commission Maker":
-        return redirect("commissions:commission_list")
-
     commission = Commission.objects.get(pk=pk)
 
     if commission.maker != request.user.profile:

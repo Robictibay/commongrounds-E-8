@@ -25,13 +25,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-=xeqav!9=pq=9dk1o7^r!6oq2o1%_23m2a*(#t^oh!jmaxg#uc')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = ["*"]
 
 # ADDED FOR RAILWAY CSRF/HTTPS
 CSRF_TRUSTED_ORIGINS = [
-    "https://commongrounds-e-8-production.up.railway.app",
+    "https://web-production-3544d.up.railway.app",
 ]
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 

@@ -4,7 +4,7 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, FormView
 
 from accounts.mixins import RoleRequiredMixin
-from datetime import date
+from datetime import date, timedelta
 from .models import Book, Bookmark
 from .forms import BookCreateForm, BookUpdateForm, BookReviewForm, BorrowForm
 
@@ -171,6 +171,8 @@ class BookBorrowView(FormView):
         if self.request.user.is_authenticated:
             borrow.borrower = self.request.user.profile
 
-        borrow.date_to_return = form.cleaned_data['date_to_return']
+        # FORCE THE 2-WEEK RULE (Overrides manual form input)
+        borrow.date_to_return = form.cleaned_data['date_borrowed'] + timedelta(days=14)
+
         borrow.save()
         return redirect('bookclub:book-detail', pk=book.pk)

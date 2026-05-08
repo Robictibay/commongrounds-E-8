@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import ProjectCategory, Project
+from .models import ProjectCategory, Project, Favorite, ProjectReview, ProjectRating
 
 @admin.register(ProjectCategory)
 class ProjectCategoryAdmin(admin.ModelAdmin):
@@ -11,5 +11,6 @@ class ProjectAdmin(admin.ModelAdmin):
     list_filter = ('category',)
     search_fields = ('title', 'description', 'materials', 'steps')
 
-
-    
+admin.site.register(Favorite)
+admin.site.register(ProjectReview)
+admin.site.register(ProjectRating)

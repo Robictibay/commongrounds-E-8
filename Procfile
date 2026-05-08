@@ -1,1 +1,1 @@
-web: gunicorn commongrounds.wsgi
+web: gunicorn commongrounds.wsgi:application --log-file -

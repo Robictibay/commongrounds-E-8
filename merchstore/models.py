@@ -2,9 +2,6 @@ from django.db import models
 from django.urls import reverse
 from accounts.models import Profile
 
-# Create your models here.
-
-
 class ProductType(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True)
@@ -22,29 +19,44 @@ class Product(models.Model):
         ('On sale', 'On sale'),
         ('Out of stock', 'Out of stock'),
     ]
+
     name = models.CharField(max_length=255)
+
     product_type = models.ForeignKey(
         ProductType,
         on_delete=models.SET_NULL,
         related_name='product',
         null=True
     )
+
     owner = models.ForeignKey(
         Profile,
         on_delete=models.CASCADE,
         related_name='product',
         null=True
     )
+
+    image = models.ImageField(
+        upload_to='merchstore/images/',
+        blank=True,
+        null=True
+    )
+
     description = models.TextField(blank=True)
     price = models.DecimalField(max_digits=5, decimal_places=2)
     stock = models.PositiveIntegerField(default=0)
-    status = models.CharField(choices=STATUS_CHOICES, default='Available')
+
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default='Available'
+    )
 
     class Meta:
         ordering = ['name']
 
     def __str__(self):
-        return '{}'.format(self.name)
+        return self.name
 
     def get_absolute_url(self):
         return reverse('merchstore:item-detail', args=[str(self.id)])
@@ -52,7 +64,7 @@ class Product(models.Model):
     def save(self, *args, **kwargs):
         if self.stock == 0:
             self.status = 'Out of stock'
-        else:
+        elif self.status == 'Out of stock':
             self.status = 'Available'
         super().save(*args, **kwargs)
 
@@ -77,5 +89,12 @@ class Transaction(models.Model):
         related_name='transaction'
     )
     amount = models.PositiveIntegerField()
-    status = models.CharField(choices=STATUS_CHOICES, default='On cart')
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default='On cart'
+    )
     created_on = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.buyer} - {self.product} ({self.amount})"

@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.urls import reverse
@@ -63,6 +65,9 @@ class BookReview(models.Model):
     title = models.CharField(max_length=255)
     comment = models.TextField()
 
+    def __str__(self):
+        return f"{self.title} - {self.book}"
+
 
 class Bookmark(models.Model):
     profile = models.ForeignKey(
@@ -78,6 +83,9 @@ class Bookmark(models.Model):
         related_name='bookmarks'
     )
     date_bookmarked = models.DateField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.profile} bookmarked {self.book}"
 
 
 class Borrow(models.Model):
@@ -96,3 +104,11 @@ class Borrow(models.Model):
     name = models.CharField(max_length=255)
     date_borrowed = models.DateField()
     date_to_return = models.DateField()
+
+    def save(self, *args, **kwargs):
+        if self.date_borrowed:
+            self.date_to_return = self.date_borrowed + timedelta(days=14)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.name} borrowed {self.book}"

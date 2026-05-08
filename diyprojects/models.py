@@ -27,7 +27,7 @@ class Project(models.Model):
     )
     creator = models.ForeignKey(
         Profile,
-        on_delete=models.SET_NULL,
+        on_delete=models.CASCADE,
         null=True,
         related_name="created_projects"
     )
@@ -75,6 +75,9 @@ class Favorite(models.Model):
         max_length=255, choices=STATUS_CHOICES, default=STATUS_BACKLOG
     )
 
+    def __str__(self):
+        return f"{self.profile} - {self.project} ({self.project_status})"
+
 
 class ProjectReview(models.Model):
     project = models.ForeignKey(
@@ -91,6 +94,9 @@ class ProjectReview(models.Model):
     )
     comment = models.TextField()
     image = models.ImageField(upload_to="images/", null=False, blank=False)
+
+    def __str__(self):
+        return f"Review by {self.reviewer} on {self.project}"
 
 
 class ProjectRating(models.Model):
@@ -109,3 +115,6 @@ class ProjectRating(models.Model):
     score = models.IntegerField(
         validators=[MinValueValidator(1), MaxValueValidator(10)]
     )
+
+    def __str__(self):
+        return f"{self.profile} rated {self.project}: {self.score}"

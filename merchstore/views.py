@@ -73,10 +73,9 @@ class ProductCreateView(RoleRequiredMixin, CreateView):
     form_class = ProductForm
 
     def form_valid(self, form):
-        response = super().form_valid(form)
-        self.object.owner = self.request.user.profile
-        self.object.save()
-        return response
+        # Set the owner BEFORE saving to the database
+        form.instance.owner = self.request.user.profile
+        return super().form_valid(form)
 
 
 class ProductUpdateview(RoleRequiredMixin, UpdateView):
@@ -84,6 +83,15 @@ class ProductUpdateview(RoleRequiredMixin, UpdateView):
     template_name = 'merchstore/product_form.html'
     required_role = 'Market Seller'
     form_class = ProductForm
+
+    def form_valid(self, form):
+        # Automatically adjust status based on the stock input
+        if form.instance.stock == 0:
+            form.instance.status = 'Out of stock'
+        else:
+            form.instance.status = 'Available'
+
+        return super().form_valid(form)
 
 
 class CartView(LoginRequiredMixin, ListView):

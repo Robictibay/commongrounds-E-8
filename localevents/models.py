@@ -62,6 +62,19 @@ class Event(models.Model):
     def get_absolute_url(self):
         return reverse('localevents:event-detail', args=[str(self.id)])
 
+    def update_status(self):
+        if self.status in [self.STATUS_DONE, self.STATUS_CANCELLED]:
+            return
+
+        signup_count = self.eventsignup_set.count()
+
+        if self.event_capacity > 0 and signup_count >= self.event_capacity:
+            self.status = self.STATUS_FULL
+        else:
+            self.status = self.STATUS_AVAILABLE
+
+        self.save(update_fields=['status'])
+
 
 class EventSignup(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
@@ -72,6 +85,15 @@ class EventSignup(models.Model):
         blank=True
     )
     new_registrant = models.CharField(max_length=255, null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self.event.update_status()
+
+    def delete(self, *args, **kwargs):
+        event = self.event
+        super().delete(*args, **kwargs)
+        event.update_status()
 
     def __str__(self):
         if self.user_registrant:
